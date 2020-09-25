@@ -1,7 +1,7 @@
 import abc
 from typing import List
 
-from domain.model import User, Movie, Genre, Review
+from domain.model import User, Movie, Genre, Review, Actor, Director
 
 repo_instance = None
 
@@ -101,4 +101,24 @@ class AbstractRepository(abc.ABC):
     @abc.abstractmethod
     def get_reviews(self):
         """Returns the Reviews stored in the repository."""
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def add_actor(self, actor: Actor):
+        """Adds an Actor to the repository"""
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_actors(self) -> List[Actor]:
+        """Returns the Actors sotred in the repository"""
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def add_director(self, director: Director):
+        """Adds a Director to the repository"""
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_directors(self) -> List[Director]:
+        """Returns the Directors stored in the repository"""
         raise NotImplementedError
