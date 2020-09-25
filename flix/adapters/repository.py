@@ -1,7 +1,7 @@
 import abc
 from typing import List
 
-from domain.model import User, Movie, Genre, Review, Actor, Director
+from flix.domain.model import User, Movie, Genre, Review, Actor, Director
 
 repo_instance = None
 

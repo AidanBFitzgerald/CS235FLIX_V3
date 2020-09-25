@@ -1,7 +1,7 @@
 from typing import List
 
 from adapters.repository import AbstractRepository
-from domain.model import Director, Actor, Review, Genre, Movie, User
+from flix.domain.model import Director, Actor, Review, Genre, Movie, User
 
 
 class MemoryRepository(AbstractRepository):
