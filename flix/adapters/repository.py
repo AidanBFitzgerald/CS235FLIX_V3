@@ -64,14 +64,14 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_movies_by_year(self, year: int) -> List[Movie]:
+    def get_movies_from_year(self, year: int) -> List[Movie]:
         """Returns a list of Movies that are in a certain year, from the repository.
 
         If there are no Movies in the specified year, this method returns an empty list."""
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_movies_from_genre(self, genre: Genre):
+    def get_movies_from_genre(self, genre: Genre) -> List[Movie]:
         """Returns a list of Movies that are in a certain genre, from the repository.
 
         If there are no Movies in the specified genre, this method returns an empty list."""
