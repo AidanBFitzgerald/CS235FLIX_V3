@@ -33,7 +33,7 @@ class Actor:
         if colleague not in self.__colleagues and isinstance(colleague, Actor):
             self.__colleagues.append(colleague)
 
-    def check_if_this_actor_worked_with(self,colleague):
+    def check_if_this_actor_worked_with(self, colleague):
         if colleague in self.__colleagues:
             return True
         return False
@@ -80,13 +80,13 @@ class Genre:
     def __repr__(self):
         return f"<Genre {self.__genre_name}>"
 
-    def __eq__(self,other):
-        if not isinstance(other,Genre):
+    def __eq__(self, other):
+        if not isinstance(other, Genre):
             return False
         return self.genre_name == other.genre_name
 
     def __lt__(self, other):
-        if not isinstance(other,Genre):
+        if not isinstance(other, Genre):
             return False
         return self.genre_name < other.genre_name
 
@@ -180,7 +180,7 @@ class Movie:
         return self.__title == other.__title and self.__year == other.__year
 
     def __lt__(self, other):
-        if isinstance(other,Movie):
+        if isinstance(other, Movie):
             if self.__title == other.title:
                 return self.__year < other.__year
             else:
