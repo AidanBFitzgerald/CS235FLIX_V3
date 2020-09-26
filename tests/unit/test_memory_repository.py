@@ -1,6 +1,6 @@
 import pytest
 
-from flix.domain.model import User, Movie, Genre
+from flix.domain.model import User, Movie, Genre, Review, Actor, Director
 
 
 def test_repository_can_add_a_user(in_memory_repo):
@@ -79,7 +79,7 @@ def test_repository_can_add_genre(in_memory_repo):
     assert genre in in_memory_repo.get_genres()
 
 
-def test_repository_can_retreive_genres(in_memory_repo):
+def test_repository_can_retrieve_genres(in_memory_repo):
     genres = in_memory_repo.get_genres()
     assert len(genres) == 10
     assert Genre("Action") in genres
@@ -95,3 +95,43 @@ def test_repository_can_get_movies_from_genre(in_memory_repo):
 def test_repository_returns_an_empty_list_where_there_are_no_movies_in_a_genre(in_memory_repo):
     movies = in_memory_repo.get_movies_from_genre("Indie")
     assert len(movies) == 0
+
+
+def test_repository_can_add_a_review(in_memory_repo):
+    review = Review(Movie("asdsa", 2014), "Great Movie!", 9)
+    in_memory_repo.add_review(review)
+    reviews = in_memory_repo.get_reviews()
+    assert len(reviews) == 1
+    assert review in reviews
+
+
+# ADD TEST FOR USER AND MOVIE LINK WITH REVIEW
+
+
+def test_repository_returns_an_empty_list_where_there_no_reviews(in_memory_repo):
+    reviews = in_memory_repo.get_reviews()
+    assert len(reviews) == 0
+
+
+def test_repository_can_add_a_actor(in_memory_repo):
+    actor = Actor("Dave Brown")
+    in_memory_repo.add_actor(actor)
+    assert actor in in_memory_repo.get_actors()
+
+
+def test_repository_can_retrieve_actors(in_memory_repo):
+    actors = in_memory_repo.get_actors()
+    assert len(actors) == 20
+    assert Actor("Chris Pratt") in actors
+
+
+def test_repository_can_add_a_director(in_memory_repo):
+    director = Director("Fred")
+    in_memory_repo.add_director(director)
+    assert director in in_memory_repo.get_directors()
+
+
+def test_repository_can_retrieve_directors(in_memory_repo):
+    directors = in_memory_repo.get_directors()
+    assert len(directors) == 5
+    assert Director("James Gunn") in directors
