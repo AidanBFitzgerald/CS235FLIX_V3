@@ -1,6 +1,7 @@
+from abc import ABC
 from typing import List
 
-from adapters.repository import AbstractRepository
+from flix.adapters.repository import AbstractRepository
 from flix.domain.model import Director, Actor, Review, Genre, Movie, User
 
 
@@ -36,10 +37,10 @@ class MemoryRepository(AbstractRepository):
     def get_last_movie(self) -> Movie:
         pass
 
-    def get_movies_by_year(self, year: int) -> List[Movie]:
+    def get_movies_from_year(self, year: int) -> List[Movie]:
         pass
 
-    def get_movies_from_genre(self, genre: Genre):
+    def get_movies_from_genre(self, genre: Genre) -> List[Movie]:
         pass
 
     def add_genre(self):
@@ -51,7 +52,7 @@ class MemoryRepository(AbstractRepository):
     def add_review(self, review: Review):
         pass
 
-    def get_reviews(self):
+    def get_reviews(self) -> List[Review]:
         pass
 
     def add_actor(self, actor: Actor):
@@ -65,3 +66,4 @@ class MemoryRepository(AbstractRepository):
 
     def get_directors(self) -> List[Director]:
         pass
+
