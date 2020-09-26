@@ -116,6 +116,10 @@ class Movie:
         return self.__title
 
     @property
+    def year(self) -> int:
+        return self.__year
+
+    @property
     def description(self) -> str:
         return self.__description
 
