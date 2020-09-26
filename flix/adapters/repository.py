@@ -99,7 +99,7 @@ class AbstractRepository(abc.ABC):
             raise RepositoryException("Review not correctly attached to a Movie")
 
     @abc.abstractmethod
-    def get_reviews(self):
+    def get_reviews(self) -> List[Review]:
         """Returns the Reviews stored in the repository."""
         raise NotImplementedError
 
