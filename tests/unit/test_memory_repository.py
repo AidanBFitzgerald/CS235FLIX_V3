@@ -4,13 +4,13 @@ from flix.domain.model import User, Movie, Genre, Review, Actor, Director
 
 
 def test_repository_can_add_a_user(in_memory_repo):
-    user = User("Aidan", "1234567890")
+    user = User("aidan", "1234567890")
     in_memory_repo.add_user(user)
-    assert in_memory_repo.get_user("Aidan") is user
+    assert in_memory_repo.get_user("aidan") is user
 
 
 def test_repository_does_not_retrieve_a_non_existent_user(in_memory_repo):
-    user = in_memory_repo.get_user('Sam')
+    user = in_memory_repo.get_user('sam')
     assert user is None
 
 
