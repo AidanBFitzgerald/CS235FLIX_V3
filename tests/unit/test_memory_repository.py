@@ -35,6 +35,7 @@ def test_repository_can_retrieve_movie(in_memory_repo):
 
     # Check that the Movie has the expected title.
     assert movie.title == "Guardians of the Galaxy"
+    assert movie.id == 1
 
 
 def test_repository_does_not_retrieve_a_non_existent_movie(in_memory_repo):
