@@ -95,13 +95,15 @@ class Genre:
 
 
 class Movie:
-    def __init__(self, title: str, year: int):
+
+    def __init__(self, title: str, year: int, movie_id: int = None):
         self.__description = None
         self.__director = None
         self.__actors = []
         self.__genres = []
         self.__runtime_minutes = None
         self.__reviews = []
+        self.__id = movie_id
 
         if year >= 1900:
             self.__year = year
@@ -111,6 +113,10 @@ class Movie:
             self.__title = None
         else:
             self.__title = title.strip()
+
+    @property
+    def id(self):
+        return self.__id
 
     @property
     def title(self) -> str:
