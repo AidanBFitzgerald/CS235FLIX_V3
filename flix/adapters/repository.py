@@ -31,10 +31,10 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_movie(self, title, year) -> Movie:
-        """Returns Movie with title and year from the repository
+    def get_movie(self, movie_id: int) -> Movie:
+        """Returns Movie with id from the repository
 
-        If there is no Movie with the given title and year, this method returns None."""
+        If there is no Movie with the given id, this method returns None."""
         raise NotImplementedError
 
     @abc.abstractmethod

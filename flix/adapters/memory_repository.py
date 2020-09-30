@@ -32,10 +32,14 @@ class MemoryRepository(AbstractRepository):
             insort_left(self.__dataset_of_movies, movie)
             self.__movies_index[movie.id] = movie
 
-    def get_movie(self, title, year) -> Movie:
-        for movie in self.__dataset_of_movies:
-            if movie.title == title and movie.year == year:
-                return movie
+    def get_movie(self, movie_id: int) -> Movie:
+        movie = None
+        try:
+            movie = self.__movies_index[movie_id]
+        except KeyError:
+            pass
+
+        return movie
 
     def get_movies_by_letter(self, target_letter) -> List[Movie]:
         letter_found = False

@@ -25,13 +25,13 @@ def test_repository_can_retrieve_movie_count(in_memory_repo):
 
 
 def test_repository_can_add_a_movie(in_memory_repo):
-    movie = Movie("Kingsman", 2016)
+    movie = Movie("Kingsman", 2016, 6)
     in_memory_repo.add_movie(movie)
-    assert in_memory_repo.get_movie("Kingsman", 2016) is movie
+    assert in_memory_repo.get_movie(6) is movie
 
 
 def test_repository_can_retrieve_movie(in_memory_repo):
-    movie = in_memory_repo.get_movie("Guardians of the Galaxy", 2014)
+    movie = in_memory_repo.get_movie(1)
 
     # Check that the Movie has the expected title.
     assert movie.title == "Guardians of the Galaxy"
@@ -39,7 +39,7 @@ def test_repository_can_retrieve_movie(in_memory_repo):
 
 
 def test_repository_does_not_retrieve_a_non_existent_movie(in_memory_repo):
-    movie = in_memory_repo.get_movie("dadasd", 1988)
+    movie = in_memory_repo.get_movie(7)
     assert movie is None
 
 
