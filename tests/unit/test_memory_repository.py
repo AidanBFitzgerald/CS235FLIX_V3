@@ -1,6 +1,9 @@
+from datetime import datetime
+
 import pytest
 
-from flix.domain.model import User, Movie, Genre, Review, Actor, Director
+from flix.adapters.repository import RepositoryException
+from flix.domain.model import User, Movie, Genre, Review, Actor, Director, make_review
 
 
 def test_repository_can_add_a_user(in_memory_repo):
@@ -98,14 +101,29 @@ def test_repository_returns_an_empty_list_where_there_are_no_movies_in_a_genre(i
 
 
 def test_repository_can_add_a_review(in_memory_repo):
-    review = Review(Movie("asdsa", 2014), "Great Movie!", 9)
+    user = User('aidan', 'hi1234')
+    movie = Movie("asdsa", 2014)
+    review = make_review("Wow good movie", user, movie, 9)
     in_memory_repo.add_review(review)
     reviews = in_memory_repo.get_reviews()
     assert len(reviews) == 1
     assert review in reviews
 
 
-# ADD TEST FOR USER AND MOVIE LINK WITH REVIEW
+def test_repository_does_not_add_a_review_without_a_user(in_memory_repo):
+    movie = Movie("asdsa", 2014)
+    review = Review(None, movie, "Wow", 8, datetime.today())
+    with pytest.raises(RepositoryException):
+        in_memory_repo.add_review(review)
+
+
+def test_repository_does_not_add_a_review_without_a_movie_properly_attached(in_memory_repo):
+    user = User('aidan', 'hi1234')
+    movie = Movie("asdsa", 2014)
+    review = Review(user, movie, "Wow good movie", 9, datetime.today())
+    user.add_review(review)
+    with pytest.raises(RepositoryException):
+        in_memory_repo.add_review(review)
 
 
 def test_repository_returns_an_empty_list_where_there_no_reviews(in_memory_repo):
