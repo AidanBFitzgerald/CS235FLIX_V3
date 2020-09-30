@@ -80,6 +80,7 @@ class MemoryRepository(AbstractRepository):
         return self.__dataset_of_genres
 
     def add_review(self, review: Review):
+        super().add_review(review)
         if review not in self.__dataset_of_reviews:
             self.__dataset_of_reviews.append(review)
 
