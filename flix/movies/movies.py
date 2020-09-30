@@ -1,6 +1,6 @@
-# Configure Blueprint
 from flask import Blueprint, request
 
+# Configure Blueprint
 movies_blueprint = Blueprint('movies.bp', __name__)
 
 
