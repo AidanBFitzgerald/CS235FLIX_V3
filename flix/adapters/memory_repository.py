@@ -1,5 +1,6 @@
 import csv
 import os
+from bisect import insort_left
 from typing import List
 
 from flix.adapters.repository import AbstractRepository
@@ -15,6 +16,7 @@ class MemoryRepository(AbstractRepository):
         self.__dataset_of_directors = list()
         self.__dataset_of_genres = list()
         self.__dataset_of_reviews = list()
+        self.__movies_index = dict()
 
     def add_user(self, user: User):
         if user not in self.__dataset_of_users:
@@ -27,8 +29,8 @@ class MemoryRepository(AbstractRepository):
 
     def add_movie(self, movie: Movie):
         if movie not in self.__dataset_of_movies:
-            self.__dataset_of_movies.append(movie)
-            self.__dataset_of_movies.sort()
+            insort_left(self.__dataset_of_movies, movie)
+            self.__movies_index[movie.id] = movie
 
     def get_movie(self, title, year) -> Movie:
         for movie in self.__dataset_of_movies:
@@ -106,33 +108,28 @@ class MemoryRepository(AbstractRepository):
             movie_file_reader = csv.DictReader(csvfile)
 
             for row in movie_file_reader:
+                id = int(row['Rank'])
                 title = row['Title']
                 release_year = int(row['Year'])
-                movie = Movie(title, release_year)
-                self.__dataset_of_movies.append(movie)
+                movie = Movie(title, release_year, id)
+                self.add_movie(movie)
                 actors = row["Actors"]
                 actors = actors.split(",")
                 for actor in actors:
                     actor = Actor(actor)
                     movie.add_actor(actor)
-
-                    if actor not in self.__dataset_of_actors:
-                        self.__dataset_of_actors.append(actor)
+                    self.add_actor(actor)
 
                 director = Director(row["Director"])
                 movie.director = director
-
-                if director not in self.__dataset_of_directors:
-                    self.__dataset_of_directors.append(director)
+                self.add_director(director)
 
                 genres = row["Genre"]
                 genres = genres.split(",")
                 for genre in genres:
                     genre = Genre(genre)
                     movie.add_genre(genre)
-
-                    if genre not in self.__dataset_of_genres:
-                        self.__dataset_of_genres.append(genre)
+                    self.add_genre(genre)
 
                 movie.description = row["Description"]
                 movie.runtime_minutes = row["Runtime (Minutes)"]
