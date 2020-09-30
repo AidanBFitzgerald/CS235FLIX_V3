@@ -101,6 +101,7 @@ class Movie:
         self.__actors = []
         self.__genres = []
         self.__runtime_minutes = None
+        self.__reviews = []
 
         if year >= 1900:
             self.__year = year
@@ -139,6 +140,10 @@ class Movie:
     def runtime_minutes(self) -> int:
         return self.__runtime_minutes
 
+    @property
+    def reviews(self):
+        return self.__reviews
+
     @title.setter
     def title(self, new_title: str):
         if new_title == "" or type(new_title) is not str:
@@ -174,6 +179,15 @@ class Movie:
             if new_runtime <= 0:
                 raise ValueError
             self.__runtime_minutes = new_runtime
+
+    @reviews.setter
+    def reviews(self, new_reviews):
+        if type(new_reviews) is list:
+            self.__reviews = new_reviews
+
+    def add_review(self, review: 'Review'):
+        if type(review) is Review:
+            self.__reviews.append(review)
 
     def __repr__(self):
         return f"<Movie {self.__title}, {self.__year}>"
@@ -218,13 +232,18 @@ class Movie:
 
 
 class Review:
-    def __init__(self, movie: Movie, review_text: str, rating: int):
+    def __init__(self, user: 'User', movie: Movie, review_text: str, rating: int, timestamp: datetime):
+        self.__user = user
         self.__movie = movie
         self.__review_text = review_text
         self.__rating = None
         if 1 <= rating <= 10:
             self.__rating = rating
-        self.__time = datetime.today()
+        self.__time = timestamp
+
+    @property
+    def user(self) -> 'User':
+        return self.__user
 
     @property
     def movie(self) -> Movie:
@@ -430,3 +449,11 @@ class WatchList:
         else:
             self.__iter_index = 0
             raise StopIteration
+
+
+def make_review(review_text: str, user: User, movie: Movie, rating: int, timestamp: datetime = datetime.today()):
+    review = Review(user, movie, review_text, rating, timestamp)
+    user.add_review(review)
+    movie.add_review(review)
+
+    return review
