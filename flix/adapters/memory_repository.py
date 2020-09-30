@@ -1,4 +1,5 @@
 import csv
+import os
 from typing import List
 
 from flix.adapters.repository import AbstractRepository
@@ -134,3 +135,7 @@ class MemoryRepository(AbstractRepository):
 
                 movie.description = row["Description"]
                 movie.runtime_minutes = row["Runtime (Minutes)"]
+
+
+def populate(data_path: str, repo: MemoryRepository):
+    repo.read_csv_file(os.path.join(data_path, 'movies.csv'))
