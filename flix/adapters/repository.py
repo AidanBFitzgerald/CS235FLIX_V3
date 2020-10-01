@@ -82,6 +82,10 @@ class AbstractRepository(abc.ABC):
         If movie is first in the repository, this method returns None"""
         raise NotImplementedError
 
+    def get_all_letters(self):
+        """Returns all the letters that are at the start of at least 1 movie in the Repository"""
+        raise NotImplementedError
+
     @abc.abstractmethod
     def get_movies_from_genre(self, genre: Genre) -> List[Movie]:
         """Returns a list of Movies that are in a certain genre, from the repository.

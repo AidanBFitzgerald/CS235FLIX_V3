@@ -74,8 +74,8 @@ class MemoryRepository(AbstractRepository):
     def get_letter_of_next_movie(self, movie: Movie):
         next_letter = None
         try:
-            index= self.__dataset_of_movies.index(movie)
-            for sorted_movie in self.__dataset_of_movies[index+1:]:
+            index = self.__dataset_of_movies.index(movie)
+            for sorted_movie in self.__dataset_of_movies[index + 1:]:
                 if sorted_movie.title[0] > movie.title[0]:
                     next_letter = sorted_movie.title[0]
                     break
@@ -94,6 +94,14 @@ class MemoryRepository(AbstractRepository):
         except ValueError:
             pass
         return previous_letter
+
+    def get_all_letters(self):
+        letters = list()
+        for movie in self.__dataset_of_movies:
+            if movie.title[0] not in letters:
+                letters.append(movie.title[0])
+
+        return letters
 
     def get_movies_from_genre(self, genre: Genre) -> List[Genre]:
         genre_match = []
