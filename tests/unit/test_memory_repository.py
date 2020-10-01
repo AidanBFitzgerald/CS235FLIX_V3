@@ -84,6 +84,12 @@ def test_repository_can_get_previous_movie_letter(in_memory_repo):
     assert prev_movie_letter == "P"
 
 
+def test_repository_retrieves_all_letters(in_memory_repo):
+    letters = in_memory_repo.get_all_letters()
+    assert len(letters) == 3
+    assert letters[0] == 'G'
+
+
 def test_repository_returns_an_empty_list_when_there_are_none_for_given_date(in_memory_repo):
     movies = in_memory_repo.get_movies_from_year(2077)
     assert len(movies) == 0
