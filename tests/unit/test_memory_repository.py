@@ -72,6 +72,18 @@ def test_repository_can_get_movies_from_year(in_memory_repo):
     assert movies[0].title == "Prometheus"
 
 
+def test_repository_can_get_next_movie_letter(in_memory_repo):
+    movie = in_memory_repo.get_movie(1)
+    next_movie_letter = in_memory_repo.get_letter_of_next_movie(movie)
+    assert next_movie_letter == 'P'
+
+
+def test_repository_can_get_previous_movie_letter(in_memory_repo):
+    movie = in_memory_repo.get_movie(5)
+    prev_movie_letter = in_memory_repo.get_letter_of_previous_movie(movie)
+    assert prev_movie_letter == "P"
+
+
 def test_repository_returns_an_empty_list_when_there_are_none_for_given_date(in_memory_repo):
     movies = in_memory_repo.get_movies_from_year(2077)
     assert len(movies) == 0
