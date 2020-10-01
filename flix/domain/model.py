@@ -68,6 +68,7 @@ class Director:
 
 class Genre:
     def __init__(self, genre_name: str):
+        self.__movies = []
         if genre_name == "" or type(genre_name) is not str:
             self.__genre_name = None
         else:
@@ -76,6 +77,19 @@ class Genre:
     @property
     def genre_name(self) -> str:
         return self.__genre_name
+
+    @property
+    def movies(self) -> list:
+        return self.__movies
+
+    @movies.setter
+    def movies(self, new_movies: list):
+        if type(new_movies) is list:
+            self.__movies = new_movies
+
+    def add_movie(self, movie: 'Movie'):
+        if isinstance(movie, Movie) and movie not in self.__movies:
+            self.__movies.append(movie)
 
     def __repr__(self):
         return f"<Genre {self.__genre_name}>"
