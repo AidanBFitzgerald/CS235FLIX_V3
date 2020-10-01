@@ -70,6 +70,18 @@ class AbstractRepository(abc.ABC):
         If there are no Movies in the specified year, this method returns an empty list."""
         raise NotImplementedError
 
+    def get_letter_of_next_movie(self, movie: Movie):
+        """Returns letter of a movie that is after specified movie
+
+        If movie is last movie in the repository, this method returns None"""
+        raise NotImplementedError
+
+    def get_letter_of_previous_movie(self, movie: Movie):
+        """Returns letter of a movie that is before the specified movie
+
+        If movie is first in the repository, this method returns None"""
+        raise NotImplementedError
+
     @abc.abstractmethod
     def get_movies_from_genre(self, genre: Genre) -> List[Movie]:
         """Returns a list of Movies that are in a certain genre, from the repository.
