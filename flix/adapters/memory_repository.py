@@ -168,7 +168,7 @@ class MemoryRepository(AbstractRepository):
                     self.add_genre(genre)
 
                 movie.description = row["Description"]
-                movie.runtime_minutes = row["Runtime (Minutes)"]
+                movie.runtime_minutes = int(row["Runtime (Minutes)"])
 
 
 def populate(data_path: str, repo: MemoryRepository):
