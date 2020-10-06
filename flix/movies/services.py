@@ -41,6 +41,13 @@ def get_first_movie(repo: AbstractRepository):
     return movie_to_dict(movie)
 
 
+def get_first_letter(movie_id: int, repo: AbstractRepository):
+    letter = repo.get_first_letter(movie_id)
+    if 48 <= ord(letter) <= 57:
+        return 'Numbers'
+    return letter
+
+
 def get_last_movie(repo: AbstractRepository):
     movie = repo.get_last_movie()
     return movie_to_dict(movie)
@@ -48,6 +55,10 @@ def get_last_movie(repo: AbstractRepository):
 
 def get_all_letters(repo: AbstractRepository):
     return repo.get_all_letters()
+
+
+def alphabet(repo: AbstractRepository):
+    return repo.alphabet()
 
 
 def get_movies_by_letter(letter, repo: AbstractRepository):
