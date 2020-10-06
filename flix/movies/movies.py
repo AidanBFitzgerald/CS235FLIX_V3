@@ -40,7 +40,7 @@ def movies_by_letter():
         if next_letter is not None:
             next_letter_url = url_for('movies_bp.movies_by_letter', letter=next_letter)
 
-        render_template('movies/movies_by_letter',
+        render_template('movies/movies_by_letter.html',
                         first_in_letter_url=first_in_letter_url,
                         last_in_letter_url=last_in_letter_url,
                         next_in_letter_url=next_in_letter_url,
