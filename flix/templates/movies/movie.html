@@ -1,0 +1,16 @@
+{% extends 'layout.html' %} {% block content %}
+    <main id="main">
+        <header id="movie-header">
+            <h1>{{movie.title}}</h1>
+            <h5>Movie Length: {{movie.runtime}} minutes</h5>
+        </header>
+        <p>{{movie.description}}</p><br>
+        <div id="movie-content">
+            <p>Director: {{movie.director}}</p><br>
+            <span>Staring: </span>
+            <span>{% for actor in movie.actors %}{{actor}} &nbsp {% endfor %}</span><br><br>
+            <span>Genres:</span>
+            <span>{% for genre in movie.genres %}{{genre.genre}}&nbsp {% endfor %}</span>
+        </div>
+    </main>
+{% endblock %}
