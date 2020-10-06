@@ -3,16 +3,19 @@
     <header>
         <h1>Watch List</h1>
     </header>
-
-    {% for movie in watchlist %}
-        <div id="movie-container">
-            <h6 id="movie-title">{{ movie.title }}</h6>
-            <div id="movie-description">
-                <p>{{ movie.year }} Staring:</p>
-                {% for actor in movie.actors %}
-                    <p>{{actor}} </p>
-                {% endfor %}
+    {% if 'username' in session %}
+        {% for movie in watchlist %}
+            <div id="movie-container">
+                <h6 id="movie-title">{{ movie.title }}</h6>
+                <div id="movie-description">
+                    <p>{{ movie.year }} Staring:</p>
+                    {% for actor in movie.actors %}
+                        <p>{{actor}} </p>
+                    {% endfor %}
+                </div>
             </div>
-        </div>
     {% endfor %}
+    {% else %}
+        <p id="not-logged">Must be logged in to access watch list </p>
+    {% endif %}
 </aside>
