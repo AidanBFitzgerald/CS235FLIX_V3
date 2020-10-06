@@ -209,6 +209,20 @@ class Movie:
         if type(review) is Review:
             self.__reviews.append(review)
 
+    def get_first_letter(self):
+        letter = ""
+        try:
+            movie_title = self.title
+        except TypeError:
+            return
+
+        for letter in movie_title:
+            if 65 <= ord(letter) <= 90:
+                return letter
+        for letter in movie_title:
+            if 48 <= ord(letter) <= 57:
+                return letter
+
     def __repr__(self):
         return f"<Movie {self.__title}, {self.__year}>"
 
@@ -219,10 +233,14 @@ class Movie:
 
     def __lt__(self, other):
         if isinstance(other, Movie):
+            index_this_title = self.title.find(self.get_first_letter())
+            index_other_title = other.title.find(other.get_first_letter())
+            this_title = self.__title[index_this_title:]
+            other_title = other.title[index_other_title:]
             if self.__title == other.title:
                 return self.__year < other.__year
             else:
-                return self.__title < other.title
+                return this_title < other_title
         return False
 
     def __hash__(self):
@@ -477,3 +495,5 @@ def make_review(review_text: str, user: User, movie: Movie, rating: int, timesta
     movie.add_review(review)
 
     return review
+
+
