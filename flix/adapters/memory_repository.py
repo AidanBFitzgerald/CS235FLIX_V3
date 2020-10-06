@@ -100,7 +100,7 @@ class MemoryRepository(AbstractRepository):
         for movie in self.__dataset_of_movies:
             if movie.title[0] not in letters:
                 letters.append(movie.title[0])
-
+        letters.sort()
         return letters
 
     def get_movies_from_genre(self, genre: Genre) -> List[Genre]:
