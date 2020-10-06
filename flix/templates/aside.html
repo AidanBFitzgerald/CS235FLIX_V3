@@ -1,0 +1,18 @@
+<aside id="sidebar">
+
+    <header>
+        <h1>Watch List</h1>
+    </header>
+
+    {% for movie in watchlist %}
+        <div id="movie-container">
+            <h6 id="movie-title">{{ movie.title }}</h6>
+            <div id="movie-description">
+                <p>{{ movie.year }} Staring:</p>
+                {% for actor in movie.actors %}
+                    <p>{{actor}} </p>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</aside>
