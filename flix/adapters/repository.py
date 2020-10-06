@@ -56,6 +56,12 @@ class AbstractRepository(abc.ABC):
         Returns None if the repository is empty"""
         raise NotImplementedError
 
+    def get_first_letter(self, movie_id: int) -> str:
+        """Returns first letter of a movie title
+
+        Returns None if movie does not exist"""
+        raise NotImplementedError
+
     @abc.abstractmethod
     def get_last_movie(self) -> Movie:
         """Returns the last Movie, ordered by alphabet, from the repository.
@@ -84,6 +90,10 @@ class AbstractRepository(abc.ABC):
 
     def get_all_letters(self):
         """Returns all the letters that are at the start of at least 1 movie in the Repository"""
+        raise NotImplementedError
+
+    def alphabet(self):
+        """Returns all the letters in the alphabet in a list"""
         raise NotImplementedError
 
     @abc.abstractmethod

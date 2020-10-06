@@ -42,15 +42,13 @@ class MemoryRepository(AbstractRepository):
         return movie
 
     def get_movies_by_letter(self, target_letter) -> List[Movie]:
-        letter_found = False
         ret_list = []
         for movie in self.__dataset_of_movies:
-            if movie.title[0] == target_letter:
-                letter_found = True
+            if self.get_first_letter(movie.id) == target_letter:
                 ret_list.append(movie)
-            else:
-                if letter_found:
-                    break
+            if target_letter == "Numbers":
+                if self.get_first_letter(movie.id).isdigit():
+                    ret_list.append(movie)
         return ret_list
 
     def get_number_of_movies(self):
@@ -59,6 +57,10 @@ class MemoryRepository(AbstractRepository):
     def get_first_movie(self) -> Movie:
         if len(self.__dataset_of_movies) > 0:
             return self.__dataset_of_movies[0]
+
+    def get_first_letter(self, movie_id: int):
+        movie = self.get_movie(movie_id)
+        return movie.get_first_letter()
 
     def get_last_movie(self) -> Movie:
         if len(self.__dataset_of_movies) > 0:
@@ -76,10 +78,12 @@ class MemoryRepository(AbstractRepository):
         try:
             index = self.__dataset_of_movies.index(movie)
             for sorted_movie in self.__dataset_of_movies[index + 1:]:
-                if sorted_movie.title[0] > movie.title[0]:
-                    next_letter = sorted_movie.title[0]
+                if self.get_first_letter(sorted_movie.id) > self.get_first_letter(movie.id):
+                    next_letter = self.get_first_letter(sorted_movie.id)
                     break
         except ValueError:
+            pass
+        except TypeError:
             pass
         return next_letter
 
@@ -88,10 +92,12 @@ class MemoryRepository(AbstractRepository):
         try:
             index = self.__dataset_of_movies.index(movie)
             for sorted_movie in reversed(self.__dataset_of_movies[:index]):
-                if sorted_movie.title[0] < movie.title[0]:
-                    previous_letter = sorted_movie.title[0]
+                if self.get_first_letter(sorted_movie.id) < self.get_first_letter(movie.id):
+                    previous_letter = self.get_first_letter(sorted_movie.id)
                     break
         except ValueError:
+            pass
+        except TypeError:
             pass
         return previous_letter
 
@@ -102,6 +108,12 @@ class MemoryRepository(AbstractRepository):
                 letters.append(movie.title[0])
         letters.sort()
         return letters
+
+    def alphabet(self):
+        alphabet_list = ['Numbers']
+        for i in range(0, 26):
+            alphabet_list.append(chr(ord("A") + i))
+        return alphabet_list
 
     def get_movies_from_genre(self, genre: Genre) -> List[Genre]:
         genre_match = []
