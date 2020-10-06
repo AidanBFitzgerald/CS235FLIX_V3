@@ -1,0 +1,17 @@
+{% extends 'layout.html' %} {% block content %}
+    <main id="main">
+        <header id="letter-header">
+            <h1>{{letter}}</h1>
+        </header>
+        <div id="letters">
+            {% for letter in alphabet %}
+            <a id="letter-link" href="{{url_for('movies_bp.movies_by_letter', letter=letter)}}">{{letter}}</a>
+            {% endfor %}
+        </div>
+        <div>
+            {% for movie in movies %}
+            <a href="{{url_for('movies_bp.movie', movie_id=movie.id)}}">{{movie.title}}</a><br>
+            {% endfor %}
+        </div>
+    </main>
+{% endblock %}
