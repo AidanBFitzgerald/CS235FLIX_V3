@@ -12,5 +12,32 @@
             <span>Genres:</span>
             <span>{% for genre in movie.genres %}{{genre.genre}}&nbsp {% endfor %}</span>
         </div>
+        {% if review_page == 0 %}
+            <div style="float:right">
+                {% if movie.reviews|length > 0 and movie.id != show_reviews_for_movie %}
+                    <button class="btn-general" onclick="location.href='{{ movie.view_review_url }}'">{{ movie.reviews|length }} reviews</button>
+                {% endif %}
+                <button class="btn-general" onclick="location.href='{{ movie.add_review_url }}'">Review</button>
+            </div>
+            {% if movie.id == show_reviews_for_movie %}
+                <div style="clear:both">
+                    {% for review in movie.reviews %}
+                        <p>{{review.review_text}}, by {{review.username}}, {{review.timestamp}}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if 'username' in session %}
+                {% if movie_in_watchlist == 1 %}
+                     <div style="float:right">
+                        <button class="btn-general" onclick= "location.href='{{url_for('movies_bp.movie', in_watchlist=-1, movie_id=movie.id)}}'">Remove from Watchlist</button>
+                    </div>
+                {% else %}
+                    <div style="float:right">
+                        <button class="btn-general" onclick= "location.href='{{url_for('movies_bp.movie', in_watchlist=1, movie_id=movie.id)}}'">Add to Watchlist</button>
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+        {% block review %}{% endblock %}
     </main>
 {% endblock %}
