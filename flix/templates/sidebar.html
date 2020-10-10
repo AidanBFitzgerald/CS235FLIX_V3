@@ -6,11 +6,11 @@
     {% if 'username' in session %}
         {% for movie in watchlist %}
             <div id="movie-container">
-                <h6 id="movie-title">{{ movie.title }}</h6>
+                <a href="{{url_for('movies_bp.movie', movie_id=movie.id)}}"><h3 id="movie-title">{{ movie.title }} ({{ movie.year }})</h3></a>
                 <div id="movie-description">
-                    <p>{{ movie.year }} Staring:</p>
+                    <span>Staring:</span>
                     {% for actor in movie.actors %}
-                        <p>{{actor}} </p>
+                        <span>{{actor}} &nbsp  </span>
                     {% endfor %}
                 </div>
             </div>
