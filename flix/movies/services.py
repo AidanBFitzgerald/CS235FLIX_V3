@@ -1,7 +1,10 @@
 from typing import Iterable
 
+from flask import session
+
 from flix.adapters.repository import AbstractRepository
-from flix.domain.model import Movie, Review, Genre, make_review, Actor
+from flix.authentication.authentication import login_required
+from flix.domain.model import Movie, Review, Genre, make_review, User
 
 
 class NonExistentMovieException(Exception):
@@ -90,6 +93,48 @@ def get_reviews_for_movie(movie_id: int, repo: AbstractRepository):
     return reviews_to_dict(movie.reviews)
 
 
+def get_user(username: str, repo: AbstractRepository):
+    user = repo.get_user(username)
+    if user is None:
+        raise UnknownUserException
+
+    return user_to_dict(user)
+
+
+def get_watchlist(repo: AbstractRepository):
+    watchlist = None
+    if 'username' in session:
+        username = session['username']
+        user = repo.get_user(username)
+        watchlist = user.watchlist
+        watchlist = movies_to_dict(watchlist)
+    return watchlist
+
+
+def add_to_watchlist(movie_id: int, repo: AbstractRepository):
+    if 'username' not in session:
+        return
+    user = repo.get_user(session['username'])
+    movie = repo.get_movie(movie_id)
+    user.add_to_watchlist(movie)
+
+
+def remove_from_watchlist(movie_id: int, repo: AbstractRepository):
+    if 'username' not in session:
+        return
+    user = repo.get_user(session['username'])
+    movie = repo.get_movie(movie_id)
+    user.remove_from_watchlist(movie)
+
+
+def movie_in_watchlist(watchlist, movie_id: int):
+    if 'username' not in session:
+        return 0
+    for movie in watchlist:
+        if movie['id'] == movie_id:
+            return 1
+    return 0
+
 # ============================================
 # Functions to convert model entities to dicts
 # ============================================
@@ -138,6 +183,13 @@ def genre_to_dict(genre: Genre):
 
 def genres_to_dict(genres: Iterable[Genre]):
     return [genre_to_dict(genre) for genre in genres]
+
+
+def user_to_dict(user: User):
+    user_dict = {
+        'username': user.user_name,
+        'watchlist': user.watchlist.watchlist
+    }
 
 
 # ============================================
