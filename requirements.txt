@@ -2,3 +2,5 @@ pytest==6.1.0
 Flask~=1.1.2
 python-dotenv~=0.14.0
 Jinja2==2.11.2
+Werkzeug~=0.16.0
+WTForms~=2.3.3
