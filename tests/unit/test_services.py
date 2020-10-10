@@ -1,7 +1,9 @@
 import pytest
 
+from flix.authentication.services import AuthenticationException
 from flix.domain.model import make_review, User
 from flix.movies import services as movies_services
+from flix.authentication import services as auth_services
 
 
 def test_can_add_review(in_memory_repo):
@@ -112,3 +114,47 @@ def test_cannot_get_reviews_for_non_existent_movie(in_memory_repo):
 def test_can_get_reviews_for_movie_without_reviews(in_memory_repo):
     reviews = movies_services.get_reviews_for_movie(2, in_memory_repo)
     assert len(reviews) == 0
+
+
+def test_can_add_user(in_memory_repo):
+    username = "james"
+    password = 'abcd1A23'
+
+    auth_services.add_user(username, password, in_memory_repo)
+
+    user = auth_services.get_user(username, in_memory_repo)
+    assert user['username'] == username
+
+    # Check password is encrypted
+    assert user['password'].startswith("pbkdf2:sha256:")
+
+
+def test_cannot_add_user_with_existing_name(in_memory_repo):
+    username = 'shaun'
+    password = "12345"
+
+    with pytest.raises(auth_services.NameNotUniqueException):
+        auth_services.add_user(username, password, in_memory_repo)
+
+
+def test_authentication_with_valid_credentials(in_memory_repo):
+    username = 'aidan'
+    password = '12345'
+
+    auth_services.add_user(username, password, in_memory_repo)
+
+    try:
+        auth_services.authenticate_user(username, password, in_memory_repo)
+
+    except AuthenticationException:
+        assert False
+
+
+def test_authentication_with_invalid_credentials(in_memory_repo):
+    username = 'aidan'
+    password = '12345'
+
+    auth_services.add_user(username, password, in_memory_repo)
+
+    with pytest.raises(AuthenticationException):
+        auth_services.authenticate_user(username, "abcdefg", in_memory_repo)
