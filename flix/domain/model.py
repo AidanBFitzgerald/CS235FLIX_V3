@@ -323,6 +323,7 @@ class User:
         self.__watched_movies = []
         self.__reviews = []
         self.__time_spent_watching_movies = 0
+        self.__watchlist = WatchList()
 
     @property
     def user_name(self) -> str:
@@ -343,6 +344,16 @@ class User:
     @property
     def time_spent_watching_movies_minutes(self) -> int:
         return self.__time_spent_watching_movies
+
+    @property
+    def watchlist(self):
+        return self.__watchlist
+
+    def add_to_watchlist(self, movie: Movie):
+        self.__watchlist.add_movie(movie)
+
+    def remove_from_watchlist(self, movie: Movie):
+        self.__watchlist.remove_movie(movie)
 
     def __repr__(self):
         return f"<User {self.__username}>"
@@ -457,6 +468,10 @@ class WatchList:
         self.__watchlist = []
         self.__iter_index = 0
 
+    @property
+    def watchlist(self):
+        return self.__watchlist
+
     def add_movie(self, movie: Movie):
         if isinstance(movie, Movie) and movie not in self.__watchlist:
             self.__watchlist.append(movie)
@@ -489,7 +504,7 @@ class WatchList:
             raise StopIteration
 
 
-def make_review(review_text: str, user: User, movie: Movie, rating: int, timestamp: datetime = datetime.today()):
+def make_review(review_text: str, user: User, movie: Movie, rating: int, timestamp: datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")):
     review = Review(user, movie, review_text, rating, timestamp)
     user.add_review(review)
     movie.add_review(review)
