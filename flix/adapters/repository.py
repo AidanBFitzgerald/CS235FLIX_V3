@@ -148,3 +148,15 @@ class AbstractRepository(abc.ABC):
     def get_directors(self) -> List[Director]:
         """Returns the Directors stored in the repository"""
         raise NotImplementedError
+
+    def get_actor(self, fullname: str):
+        """Returns an actor with the given name
+
+        returns None if actor is not in repository"""
+        raise NotImplementedError
+
+    def get_director(self, fullname: str):
+        """Returns a director with the given name
+
+        returns None if director is not in repository"""
+        raise NotImplementedError

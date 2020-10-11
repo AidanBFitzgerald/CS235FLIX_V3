@@ -151,6 +151,16 @@ class MemoryRepository(AbstractRepository):
     def get_directors(self) -> List[Director]:
         return self.__dataset_of_directors
 
+    def get_actor(self, fullname: str):
+        for actor in self.__dataset_of_actors:
+            if actor.actor_full_name == fullname:
+                return actor
+
+    def get_director(self, fullname: str):
+        for director in self.__dataset_of_directors:
+            if director.director_full_name == fullname:
+                return director
+
     def read_csv_file(self, file_name):
         with open(file_name, mode='r', encoding='utf-8-sig') as csvfile:
             movie_file_reader = csv.DictReader(csvfile)
@@ -166,10 +176,12 @@ class MemoryRepository(AbstractRepository):
                 for actor in actors:
                     actor = Actor(actor)
                     movie.add_actor(actor)
+                    actor.add_movie(movie)
                     self.add_actor(actor)
 
                 director = Director(row["Director"])
                 movie.director = director
+                director.add_movie(movie)
                 self.add_director(director)
 
                 genres = row["Genre"]
