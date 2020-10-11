@@ -8,10 +8,15 @@ class Actor:
         else:
             self.__actor_full_name = actor_full_name.strip()
         self.__colleagues = []
+        self.__movies = []
 
     @property
     def actor_full_name(self) -> str:
         return self.__actor_full_name
+
+    @property
+    def movies(self) -> list:
+        return self.__movies
 
     def __repr__(self):
         return f"<Actor {self.actor_full_name}>"
@@ -38,6 +43,10 @@ class Actor:
             return True
         return False
 
+    def add_movie(self, movie: 'Movie'):
+        if isinstance(movie, Movie) and movie not in self.__movies:
+            self.__movies.append(movie)
+
 
 class Director:
 
@@ -46,10 +55,15 @@ class Director:
             self.__director_full_name = None
         else:
             self.__director_full_name = director_full_name.strip()
+        self.__movies = []
 
     @property
     def director_full_name(self) -> str:
         return self.__director_full_name
+
+    @property
+    def movies(self) -> list:
+        return self.__movies
 
     def __repr__(self):
         return f"<Director {self.__director_full_name}>"
@@ -64,6 +78,10 @@ class Director:
 
     def __hash__(self):
         return hash(self.director_full_name)
+
+    def add_movie(self, movie: 'Movie'):
+        if isinstance(movie, Movie) and movie not in self.__movies:
+            self.__movies.append(movie)
 
 
 class Genre:
