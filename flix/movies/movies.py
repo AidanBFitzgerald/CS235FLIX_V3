@@ -3,7 +3,7 @@ from flask import Blueprint, request, url_for, render_template, session, redirec
 
 # Configure Blueprint
 from flask_wtf import FlaskForm
-from wtforms import TextAreaField, HiddenField, SubmitField, IntegerField
+from wtforms import TextAreaField, HiddenField, SubmitField, IntegerField, StringField
 from wtforms.validators import DataRequired, Length, ValidationError, NumberRange
 
 from flix.adapters import repository as repo
@@ -16,6 +16,12 @@ movies_blueprint = Blueprint('movies_bp', __name__)
 @movies_blueprint.route('/movies_by_letter', methods=['GET'])
 def movies_by_letter():
     target_letter = request.args.get('letter')
+    cursor = request.args.get('cursor')
+    movies_per_page = 10
+    first_movie_url = None
+    last_movie_url = None
+    next_movie_url = None
+    prev_movie_url = None
 
     watchlist = services.get_watchlist(repo.repo_instance)
 
@@ -26,17 +32,152 @@ def movies_by_letter():
     movies, previous_letter, next_letter = services.get_movies_by_letter(target_letter, repo.repo_instance)
     alphabet = services.alphabet(repo.repo_instance)
 
+    if cursor is None:
+        # No cursor query parameter, so initialise cursor to start at the beginning.
+        cursor = 0
+    else:
+        # Convert cursor from string to int.
+        cursor = int(cursor)
+    if movies is not None:
+        if cursor > 0:
+            # There are preceding movies, so generate URLs for the 'previous' and 'first' navigation buttons.
+            prev_movie_url = url_for('movies_bp.movies_by_letter',
+                                     letter=target_letter,
+                                     cursor=cursor - movies_per_page)
+            first_movie_url = url_for('movies_bp.movies_by_letter',
+                                      letter=target_letter)
+
+        if cursor + movies_per_page < len(movies):
+            # There are further movies, so generate URLs for the 'next' and 'last' navigation buttons.
+            next_movie_url = url_for('movies_bp.movies_by_letter',
+                                     letter=target_letter,
+                                     cursor=cursor + movies_per_page)
+
+            last_cursor = movies_per_page * int(len(movies) / movies_per_page)
+            if len(movies) % movies_per_page == 0:
+                last_cursor -= movies_per_page
+
+            last_movie_url = url_for('movies_bp.movies_by_letter',
+                                     letter=target_letter,
+                                     cursor=last_cursor)
+
+    # Get Movie for current page
+    last_movie_index = cursor + movies_per_page
+    movies = movies[cursor: last_movie_index]
+
     return render_template('movies/movies_by_letter.html',
                            alphabet=alphabet,
                            movies=movies,
                            letter=target_letter,
-                           watchlist=watchlist
+                           watchlist=watchlist,
+                           prev_movie_url=prev_movie_url,
+                           first_movie_url=first_movie_url,
+                           next_movie_url=next_movie_url,
+                           last_movie_url=last_movie_url
                            )
 
 
 @movies_blueprint.route('/search', methods=['GET', 'POST'])
 def search():
-    pass
+    form = SearchForm()
+    watchlist = services.get_watchlist(repo.repo_instance)
+    search_result = []
+    search = [request.args.get('search_genre'), request.args.get('search_actor'), request.args.get('search_director')]
+    cursor = request.args.get('cursor')
+    movies_per_page = 10
+    first_movie_url = None
+    last_movie_url = None
+    next_movie_url = None
+    prev_movie_url = None
+
+    if cursor is None:
+        # No cursor query parameter, so initialise cursor to start at the beginning.
+        cursor = 0
+    else:
+        # Convert cursor from string to int.
+        cursor = int(cursor)
+
+    if form.validate_on_submit():
+        genre = form.genre.data
+        actor = form.actor.data
+        director = form.director.data
+        return redirect(url_for('movies_bp.search', search_genre=genre, search_actor=actor, search_director=director))
+
+    if search is not None:
+        movies_genre = []
+        movies_actor = []
+        movies_director = []
+        search_list = []
+
+        genre = search[0]
+        if genre != "" and genre is not None:
+            genre = genre[0].upper() + genre[1:].lower()
+            movies_genre = services.get_movies_from_genre(genre, repo.repo_instance)
+
+        actor = search[1]
+        if actor != "" and actor is not None:
+            actor = services.get_actor(actor, repo.repo_instance)
+            if actor is not None:
+                movies_actor = actor['movies']
+
+        director = search[2]
+        if director != "" and director is not None:
+            director = services.get_director(director, repo.repo_instance)
+            if director is not None:
+                movies_director = director['movies']
+        search_list = [movies_genre, movies_actor, movies_director]
+
+        # Remove search elements that are empty
+        for i in range(len(search_list) - 1, -1, -1):
+            if not search_list[i]:
+                search_list.pop(i)
+
+        # Find common movies for search parameters
+        search_result = services.elements_in_common(search_list)
+
+        if cursor > 0:
+            # There are preceding movies, so generate URLs for the 'previous' and 'first' navigation buttons.
+            prev_movie_url = url_for('movies_bp.search', search_genre=search[0],
+                                     search_actor=search[1],
+                                     search_director=search[2],
+                                     cursor=cursor - movies_per_page)
+            first_movie_url = url_for('movies_bp.search', search_genre=search[0],
+                                      search_actor=search[1],
+                                      search_director=search[2])
+
+        if cursor + movies_per_page < len(search_result):
+            # There are further movies, so generate URLs for the 'next' and 'last' navigation buttons.
+            next_movie_url = url_for('movies_bp.search', search_genre=search[0],
+                                     search_actor=search[1],
+                                     search_director=search[2],
+                                     cursor=cursor + movies_per_page)
+            last_cursor = movies_per_page * int(len(search_result) / movies_per_page)
+            if len(search_result) % movies_per_page == 0:
+                last_cursor -= movies_per_page
+
+            last_movie_url = url_for('movies_bp.search', search_genre=search[0],
+                                     search_actor=search[1],
+                                     search_director=search[2],
+                                     cursor=last_cursor)
+
+        # Get Movie for current page
+        last_movie_index = cursor + movies_per_page
+        search_result = search_result[cursor: last_movie_index]
+
+        # Get movies from movie ids
+        for i in range(0, len(search_result)):
+            search_result[i] = services.get_movie(search_result[i], repo.repo_instance)
+
+    return render_template('movies/search.html',
+                           search_result=search_result,
+                           watchlist=watchlist,
+                           form=form,
+                           handler_url=url_for('movies_bp.search'),
+                           prev_movie_url=prev_movie_url,
+                           first_movie_url=first_movie_url,
+                           next_movie_url=next_movie_url,
+                           last_movie_url=last_movie_url
+                           )
 
 
 @movies_blueprint.route('/review', methods=['GET', 'POST'])
@@ -136,3 +277,10 @@ class ReviewForm(FlaskForm):
         NumberRange(min=0, max=10, message="Rating is from 0-10")])
     movie_id = HiddenField("Movie id")
     submit = SubmitField('Submit')
+
+
+class SearchForm(FlaskForm):
+    genre = StringField("Genre")
+    actor = StringField("Actor")
+    director = StringField("Director")
+    submit = SubmitField("Search")
