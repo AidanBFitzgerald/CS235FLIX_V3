@@ -153,6 +153,7 @@ def elements_in_common(search_list):
     elements_common = []
     if search_list:
         elements_common = search_list[0]
+    # Finds intersection between all list in search_list
     for i in range(1, len(search_list)):
         elements_common = list(set(elements_common).intersection(search_list[i]))
     return elements_common
