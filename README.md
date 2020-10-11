@@ -24,3 +24,13 @@ From the CS235FLIX_V2 directory, and within the activated virtual environment (s
 ```shell
 $ flask run
 ```
+
+## Testing
+
+**Running the application tests**
+
+From the CS235FLIX_V2 directory, and within the activated virtual environment (see venv\Scripts\activate above):
+
+```shell script
+$ python -m pytest
+```
