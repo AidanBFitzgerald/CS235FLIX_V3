@@ -136,8 +136,19 @@ def test_common_elements(in_memory_repo):
     assert len(director_movies) > 0
     assert len(genre_movies) > 0
     common = movies_services.elements_in_common([genre_movies, actor_movies, director_movies])
-    assert len(common) > 0
+    assert len(common) == 1
     assert 1 in common
+
+
+def test_nothing_in_common(in_memory_repo):
+    actor_movies = movies_services.get_actor("Chris Pratt", in_memory_repo)['movies']
+    director_movies = movies_services.get_director("Ridley Scott", in_memory_repo)['movies']
+    genre_movies = movies_services.get_movies_from_genre("Action", in_memory_repo)
+    assert len(actor_movies) > 0
+    assert len(director_movies) > 0
+    assert len(genre_movies) > 0
+    common = movies_services.elements_in_common([genre_movies, actor_movies, director_movies])
+    assert len(common) == 0
 
 
 def test_can_add_user(in_memory_repo):
