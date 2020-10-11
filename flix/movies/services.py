@@ -214,6 +214,7 @@ def user_to_dict(user: User):
         'username': user.user_name,
         'watchlist': user.watchlist.watchlist
     }
+    return user_dict
 
 
 def actor_to_dict(actor: Actor):

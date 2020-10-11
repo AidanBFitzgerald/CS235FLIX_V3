@@ -175,14 +175,16 @@ class MemoryRepository(AbstractRepository):
                 actors = actors.split(",")
                 for actor in actors:
                     actor = Actor(actor)
+                    self.add_actor(actor)
+                    actor = self.get_actor(actor.actor_full_name)
                     movie.add_actor(actor)
                     actor.add_movie(movie)
-                    self.add_actor(actor)
 
                 director = Director(row["Director"])
+                self.add_director(director)
+                director = self.get_director(director.director_full_name)
                 movie.director = director
                 director.add_movie(movie)
-                self.add_director(director)
 
                 genres = row["Genre"]
                 genres = genres.split(",")
