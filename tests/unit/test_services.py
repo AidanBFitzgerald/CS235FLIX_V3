@@ -88,8 +88,8 @@ def test_can_get_movies_by_letter(in_memory_repo):
 def test_can_get_movies_from_genre(in_memory_repo):
     genre = "Action"
     movies = movies_services.get_movies_from_genre(genre, in_memory_repo)
-    assert movies[0]['id'] == 1
-    assert movies[1]['id'] == 5
+    assert movies[0] == 1
+    assert movies[1] == 5
 
 
 def test_can_get_reviews_for_movie(in_memory_repo):
@@ -115,6 +115,32 @@ def test_can_get_reviews_for_movie_without_reviews(in_memory_repo):
     reviews = movies_services.get_reviews_for_movie(2, in_memory_repo)
     assert len(reviews) == 0
 
+
+def test_can_get_actor(in_memory_repo):
+    actor = movies_services.get_actor("Chris Pratt", in_memory_repo)
+    assert actor['fullname'] == "Chris Pratt"
+    assert len(actor['movies']) > 0
+
+
+def test_can_get_director(in_memory_repo):
+    director = movies_services.get_director("James Gunn", in_memory_repo)
+    assert director['fullname'] == "James Gunn"
+    assert len(director['movies']) > 0
+
+
+def test_common_elements(in_memory_repo):
+    actor_movies = movies_services.get_actor("Chris Pratt", in_memory_repo)['movies']
+    director_movies = movies_services.get_director("James Gunn", in_memory_repo)['movies']
+    genre_movies = movies_services.get_movies_from_genre("Action", in_memory_repo)
+    assert len(actor_movies) > 0
+    assert len(director_movies) > 0
+    assert len(genre_movies) > 0
+    common = movies_services.elements_in_common(genre_movies, actor_movies, director_movies)
+    assert len(common) > 0
+    assert 1 in common
+
+
+# Add watchlist tests
 
 def test_can_add_user(in_memory_repo):
     username = "james"
