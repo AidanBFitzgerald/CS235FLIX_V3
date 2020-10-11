@@ -15,7 +15,7 @@ $ venv\Scripts\activate
 $ pip install -r requirements.txt
 ```
 
-##Execution
+## Execution
 
 **Running the application**
 
