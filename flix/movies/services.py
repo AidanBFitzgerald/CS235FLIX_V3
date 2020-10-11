@@ -3,8 +3,7 @@ from typing import Iterable
 from flask import session
 
 from flix.adapters.repository import AbstractRepository
-from flix.authentication.authentication import login_required
-from flix.domain.model import Movie, Review, Genre, make_review, User
+from flix.domain.model import Movie, Review, Genre, make_review, User, Actor, Director
 
 
 class NonExistentMovieException(Exception):
@@ -82,7 +81,7 @@ def get_movies_by_letter(letter, repo: AbstractRepository):
 def get_movies_from_genre(genre_name, repo: AbstractRepository):
     genre = Genre(genre_name)
     movies = repo.get_movies_from_genre(genre)
-    return movies_to_dict(movies)
+    return [movie.id for movie in movies]
 
 
 def get_reviews_for_movie(movie_id: int, repo: AbstractRepository):
@@ -134,6 +133,30 @@ def movie_in_watchlist(watchlist, movie_id: int):
         if movie['id'] == movie_id:
             return 1
     return 0
+
+
+def get_actor(fullname: str, repo: AbstractRepository):
+    actor = repo.get_actor(fullname)
+    if actor is None:
+        return
+    return actor_to_dict(actor)
+
+
+def get_director(fullname: str, repo: AbstractRepository):
+    director = repo.get_director(fullname)
+    if director is None:
+        return
+    return director_to_dict(director)
+
+
+def elements_in_common(search_list):
+    elements_common = []
+    if search_list:
+        elements_common = search_list[0]
+    for i in range(1, len(search_list)):
+        elements_common = list(set(elements_common).intersection(search_list[i]))
+    return elements_common
+
 
 # ============================================
 # Functions to convert model entities to dicts
@@ -190,6 +213,22 @@ def user_to_dict(user: User):
         'username': user.user_name,
         'watchlist': user.watchlist.watchlist
     }
+
+
+def actor_to_dict(actor: Actor):
+    actor_dict = {
+        'fullname': actor.actor_full_name,
+        'movies': [movie.id for movie in actor.movies]
+    }
+    return actor_dict
+
+
+def director_to_dict(director: Director):
+    director_dict = {
+        'fullname': director.director_full_name,
+        'movies': [movie.id for movie in director.movies]
+    }
+    return director_dict
 
 
 # ============================================
