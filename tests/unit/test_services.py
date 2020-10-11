@@ -135,12 +135,10 @@ def test_common_elements(in_memory_repo):
     assert len(actor_movies) > 0
     assert len(director_movies) > 0
     assert len(genre_movies) > 0
-    common = movies_services.elements_in_common(genre_movies, actor_movies, director_movies)
+    common = movies_services.elements_in_common([genre_movies, actor_movies, director_movies])
     assert len(common) > 0
     assert 1 in common
 
-
-# Add watchlist tests
 
 def test_can_add_user(in_memory_repo):
     username = "james"
