@@ -36,7 +36,7 @@ h1 {
 }
 
 .btn-general {
-    background-color: #7532cd;
+    background-color: #ff0000;
     color: white;
     border: none;
     border-radius: 8px;
@@ -47,7 +47,7 @@ h1 {
 }
 
 .btn-general-disabled {
-    background-color: #4b4276;
+    background-color: #b30000;
     border: none;
     border-radius: 8px;
     display: inline-block;
@@ -58,7 +58,7 @@ h1 {
 }
 
 .btn-general:hover {
-    background-color: #8acd32;
+    background-color: #bfbfbf;
     color: black;
 }
 
@@ -174,7 +174,7 @@ input[type='password'],
 
 input[type='submit'] {
     width: 100%;
-     background-color: #7532cd;
+     background-color: #ff0000;
      color: white;
      padding: 14px 20px;
      margin: 8px 0;
@@ -184,7 +184,7 @@ input[type='submit'] {
 }
 
 input[type='submit']:hover {
-    background-color: #8acd32;
+    background-color: #bfbfbf;
     color: black;
 }
 
