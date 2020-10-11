@@ -172,3 +172,27 @@ def test_repository_can_retrieve_directors(in_memory_repo):
     directors = in_memory_repo.get_directors()
     assert len(directors) == 5
     assert Director("James Gunn") in directors
+
+
+def test_repository_can_retrieve_actor(in_memory_repo):
+    name = "Chris Pratt"
+    actor = in_memory_repo.get_actor(name)
+    assert actor.actor_full_name == "Chris Pratt"
+
+
+def test_repository_returns_none_for_non_existent_actor(in_memory_repo):
+    name = "Sam sam"
+    actor = in_memory_repo.get_actor(name)
+    assert actor is None
+
+
+def test_repository_can_retrieve_director(in_memory_repo):
+    name = "James Gunn"
+    director = in_memory_repo.get_director(name)
+    assert director.director_full_name == "James Gunn"
+
+
+def test_repository_returns_none_for_non_existent_director(in_memory_repo):
+    name = "Sam sam"
+    director = in_memory_repo.get_director(name)
+    assert director is None
