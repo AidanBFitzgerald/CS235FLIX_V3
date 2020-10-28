@@ -115,11 +115,11 @@ class MemoryRepository(AbstractRepository):
             alphabet_list.append(chr(ord("A") + i))
         return alphabet_list
 
-    def get_movies_from_genre(self, genre: Genre) -> List[Genre]:
+    def get_movies_from_genre(self, genre: Genre):
         genre_match = []
         for movie in self.__dataset_of_movies:
             if genre in movie.genres:
-                genre_match.append(movie)
+                genre_match.append(movie.id)
         return genre_match
 
     def add_genre(self, genre: Genre):

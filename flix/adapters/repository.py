@@ -97,7 +97,7 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def get_movies_from_genre(self, genre: Genre) -> List[Movie]:
+    def get_movies_from_genre(self, genre: Genre):
         """Returns a list of Movies that are in a certain genre, from the repository.
 
         If there are no Movies in the specified genre, this method returns an empty list."""

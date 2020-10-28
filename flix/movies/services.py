@@ -81,7 +81,7 @@ def get_movies_by_letter(letter, repo: AbstractRepository):
 def get_movies_from_genre(genre_name, repo: AbstractRepository):
     genre = Genre(genre_name)
     movies = repo.get_movies_from_genre(genre)
-    return [movie.id for movie in movies]
+    return movies
 
 
 def get_reviews_for_movie(movie_id: int, repo: AbstractRepository):
