@@ -91,15 +91,15 @@ class SqlAlchemyRepository(AbstractRepository):
         return movie
 
     def get_movies_by_letter(self, target_letter) -> List[Movie]:
-        movies = self._session_cm.query(Movie).filter(Movie.first_letter == target_letter)
+        movies = self._session_cm.session.query(Movie).filter(Movie.first_letter == target_letter)
         return movies
 
     def get_number_of_movies(self):
-        number_of_movies = self._session_cm.query(Movie).count()
+        number_of_movies = self._session_cm.session.query(Movie).count()
         return number_of_movies
 
     def get_first_movie(self) -> Movie:
-        movie = self._session_cm.query(Movie).first()
+        movie = self._session_cm.session.query(Movie).first()
         return movie
 
     def get_first_letter(self, movie_id: int) -> str:
@@ -107,26 +107,26 @@ class SqlAlchemyRepository(AbstractRepository):
         return movie.get_first_letter()
 
     def get_last_movie(self) -> Movie:
-        movie = self._session_cm.query(Movie).order_by(desc(Movie.id)).first()
+        movie = self._session_cm.session.query(Movie).order_by(desc(Movie.id)).first()
 
     def get_movies_from_year(self, year: int) -> List[Movie]:
-        movies = self._session_cm.query(Movie).filter(Movie.year == year)
+        movies = self._session_cm.session.query(Movie).filter(Movie.year == year)
         return movies
 
     def get_letter_of_next_movie(self, movie: Movie):
-        movie = self._session_cm.query(Movie).filter(Movie.first_letter > movie.first_letter).order_by(
+        movie = self._session_cm.session.query(Movie).filter(Movie.first_letter > movie.first_letter).order_by(
             Movie.first_letter).first()
         return movie
 
     def get_letter_of_previous_movie(self, movie: Movie):
-        movie = self._session_cm.query(Movie).filter(Movie.first_letter < movie.first_letter).order_by(
+        movie = self._session_cm.session.query(Movie).filter(Movie.first_letter < movie.first_letter).order_by(
             desc(Movie.first_letter)).first()
         return movie
 
     def get_all_letters(self):
         # Optimise
         letters = list()
-        movies = self._session_cm.query(Movie).all()
+        movies = self._session_cm.session.query(Movie).all()
         for movie in movies:
             if movie.title[0] not in letters:
                 letters.append(movie.title[0])
@@ -161,7 +161,7 @@ class SqlAlchemyRepository(AbstractRepository):
             scm.commit()
 
     def get_genres(self) -> List[Genre]:
-        genres = self._session_cm.query(Genre).all()
+        genres = self._session_cm.session.query(Genre).all()
         return genres
 
     def add_review(self, review: Review):
@@ -171,7 +171,7 @@ class SqlAlchemyRepository(AbstractRepository):
             scm.commit()
 
     def get_reviews(self) -> List[Review]:
-        reviews = self._session_cm.query(Review).all()
+        reviews = self._session_cm.session.query(Review).all()
         return reviews
 
     def add_actor(self, actor: Actor):
@@ -180,7 +180,7 @@ class SqlAlchemyRepository(AbstractRepository):
             scm.commit()
 
     def get_actors(self) -> List[Actor]:
-        actors = self._session_cm.query(Actor).all()
+        actors = self._session_cm.session.query(Actor).all()
         return actors
 
     def add_director(self, director: Director):
@@ -189,15 +189,15 @@ class SqlAlchemyRepository(AbstractRepository):
             scm.commit()
 
     def get_directors(self) -> List[Director]:
-        directors = self._session_cm.query(Director).all()
+        directors = self._session_cm.session.query(Director).all()
         return directors
 
     def get_actor(self, fullname: str):
-        actor = self._session_cm.query(Actor).filter(Actor.actor_full_name == fullname).one()
+        actor = self._session_cm.session.query(Actor).filter(Actor.actor_full_name == fullname).one()
         return actor
 
     def get_director(self, fullname: str):
-        director = self._session_cm.query(Director).filter(Director.director_full_name == fullname).one()
+        director = self._session_cm.session.query(Director).filter(Director.director_full_name == fullname).one()
         return director
 
 
@@ -223,9 +223,10 @@ def movie_record_generator(filename: str):
                 genres[genre].append(movie_key)
 
             if movie_director not in directors.keys():
+                director_index += 1
                 directors[movie_director] = list()
-            directors[movie_director].append((director_index, movie_key))
-            director_index += 1
+                directors[movie_director].append(director_index)
+            directors[movie_director].append(movie_key)
 
             for actor in movie_actors:
                 if actor not in actors.keys():
@@ -233,7 +234,7 @@ def movie_record_generator(filename: str):
                 actors[actor].append(movie_key)
 
             # Remove Genres, Actors, Director and unused data from data
-            movie_data = movie_data[0:2] + [movie_data[3]] + [str(director_index)] + movie_data[6:8]
+            movie_data = movie_data[0:2] + [movie_data[3]] + [director_index] + movie_data[6:8]
             yield movie_data
 
 
@@ -264,7 +265,9 @@ def get_director_records():
 
     for director in directors.keys():
         director_key = directors[director][0]
-        director_records.append((director_key, director))
+        director_records.append([director_key, director])
+
+    return director_records
 
 
 def get_actor_records():
@@ -328,7 +331,7 @@ def populate(engine: Engine, data_path: str):
 
     insert_movie_actors = """
     INSERT INTO movie_actors (id, movie_id, actor_id)
-    VALUES (?, ?)"""
+    VALUES (?, ?, ?)"""
     cursor.executemany(insert_movie_actors, movie_actors_generator())
 
     conn.commit()
