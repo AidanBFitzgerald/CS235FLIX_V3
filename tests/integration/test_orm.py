@@ -10,7 +10,7 @@ def insert_user(empty_session, values=None):
     new_password = "1234"
 
     if values is not None:
-        new_name = values[0]
+        new_name = values[0].lower()
         new_password = values[1]
 
     empty_session.execute('INSERT INTO users (username, password) VALUES (:username, :password)',
@@ -23,7 +23,7 @@ def insert_user(empty_session, values=None):
 def insert_users(empty_session, values):
     for value in values:
         empty_session.execute('INSERT INTO users (username, password) VALUES (:username, :password)',
-                              {'username': value[0], 'password': value[1]})
+                              {'username': value[0].lower(), 'password': value[1]})
     rows = list(empty_session.execute('SELECT id from users'))
     keys = tuple(row[0] for row in rows)
     return keys
