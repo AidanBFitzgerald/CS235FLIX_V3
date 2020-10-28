@@ -110,8 +110,8 @@ def test_repository_can_retrieve_genres(in_memory_repo):
 def test_repository_can_get_movies_from_genre(in_memory_repo):
     movies = in_memory_repo.get_movies_from_genre(Genre("Action"))
     assert len(movies) == 2
-    assert movies[0].title == "Guardians of the Galaxy"
-    assert movies[1].title == "Suicide Squad"
+    assert movies[0] == 1
+    assert movies[1] == 5
 
 
 def test_repository_returns_an_empty_list_where_there_are_no_movies_in_a_genre(in_memory_repo):
