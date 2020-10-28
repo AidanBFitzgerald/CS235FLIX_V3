@@ -341,7 +341,7 @@ class User:
         self.__watched_movies = []
         self.__reviews = []
         self.__time_spent_watching_movies = 0
-        self.__watchlist = WatchList()
+        self.__watchlist = WatchList(self)
 
     @property
     def user_name(self) -> str:
@@ -482,13 +482,18 @@ class WatchingSession:
 
 
 class WatchList:
-    def __init__(self):
+    def __init__(self, user: User):
         self.__watchlist = []
         self.__iter_index = 0
+        self.__user = user
 
     @property
     def watchlist(self):
         return self.__watchlist
+
+    @property
+    def user(self):
+        return self.__user
 
     def add_movie(self, movie: Movie):
         if isinstance(movie, Movie) and movie not in self.__watchlist:
