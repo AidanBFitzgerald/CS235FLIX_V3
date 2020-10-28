@@ -182,6 +182,21 @@ class Movie:
     def reviews(self):
         return self.__reviews
 
+    @property
+    def first_letter(self):
+        letter = ""
+        try:
+            movie_title = self.title
+        except TypeError:
+            return
+
+        for letter in movie_title:
+            if 65 <= ord(letter) <= 90:
+                return letter
+        for letter in movie_title:
+            if 48 <= ord(letter) <= 57:
+                return letter
+
     @title.setter
     def title(self, new_title: str):
         if new_title == "" or type(new_title) is not str:
