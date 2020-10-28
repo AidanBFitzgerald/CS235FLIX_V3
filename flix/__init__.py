@@ -2,10 +2,12 @@ import os
 
 from flask import Flask
 from sqlalchemy import create_engine
+from sqlalchemy.orm import clear_mappers, sessionmaker
 from sqlalchemy.pool import NullPool
 
 import flix.adapters.repository as repo
-from flix.adapters.memory_repository import MemoryRepository, populate
+from flix.adapters import database_repository, memory_repository
+from flix.adapters.orm import metadata, map_model_to_tables
 
 
 def create_app(test_config=None):
@@ -21,8 +23,8 @@ def create_app(test_config=None):
 
     if app.config['REPOSITORY'] == 'memory':
         # Create the MemoryRepository instance for a memory-based repository.
-        repo.repo_instance = MemoryRepository()
-        populate(data_path, repo.repo_instance)
+        repo.repo_instance = memory_repository.MemoryRepository()
+        memory_repository.populate(data_path, repo.repo_instance)
 
     elif app.config['REPOSITORY'] == 'database':
         # Configure database for database repo
