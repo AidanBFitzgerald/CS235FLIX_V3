@@ -1,19 +1,20 @@
-import pytest
 import os
+import pytest
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import clear_mappers, sessionmaker
+from sqlalchemy.orm import sessionmaker, clear_mappers
 from werkzeug.security import generate_password_hash
 
+from flix.adapters import repository as repo1
 from flix import create_app
-import flix.adapters.repository as repo1
-from flix.adapters import database_repository
-from flix.adapters.memory_repository import MemoryRepository, populate
+from flix.adapters import memory_repository, database_repository
+from flix.adapters.memory_repository import MemoryRepository
 from flix.adapters.orm import metadata, map_model_to_tables
 from flix.domain.model import User
 
-TEST_DATA_PATH_MEMORY = os.path.join('tests', 'data')
-TEST_DATA_PATH_DATABASE = os.path.join('tests', 'data', 'database')
+path = os.path.dirname(__file__)
+TEST_DATA_PATH_MEMORY = os.path.join(path, 'data', 'memory')
+TEST_DATA_PATH_DATABASE = os.path.join(path, 'data', 'database')
 
 TEST_DATABASE_URI_IN_MEMORY = 'sqlite://'
 TEST_DATABASE_URI_FILE = 'sqlite:///CS235FLIX-test.db'
@@ -22,9 +23,7 @@ TEST_DATABASE_URI_FILE = 'sqlite:///CS235FLIX-test.db'
 @pytest.fixture
 def in_memory_repo():
     repo = MemoryRepository()
-    dirname = os.path.dirname(__file__)
-    filename = os.path.join(dirname, 'data')
-    populate(filename, repo)
+    memory_repository.populate(TEST_DATA_PATH_MEMORY, repo)
     repo.add_user(User("shaun", '12345'))
     return repo
 
@@ -88,9 +87,12 @@ def session_factory():
 
 @pytest.fixture
 def client():
-    my_app = create_app({'TESTING': True,  # Set to True during testing.
-                         'TEST_DATA_PATH': TEST_DATA_PATH,  # Path for loading test data into the repository.
-                         'WTF_CSRF_ENABLED': False})
+    my_app = create_app({
+        'TESTING': True,  # Set to True during testing.
+        'REPOSITORY': 'memory',  # Set to 'memory' or 'database' depending on desired repository.
+        'TEST_DATA_PATH': TEST_DATA_PATH_MEMORY,  # Path for loading test data into the repository.
+        'WTF_CSRF_ENABLED': False  # test_client will not send a CSRF token, so disable validation.
+    })
     repo1.repo_instance.add_user(User("shaun", generate_password_hash("12345")))
     return my_app.test_client()
 
