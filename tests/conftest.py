@@ -5,19 +5,19 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, clear_mappers
 from werkzeug.security import generate_password_hash
 
-from flix.adapters import repository as repo1
 from flix import create_app
+from flix.adapters import repository as repo1
 from flix.adapters import memory_repository, database_repository
-from flix.adapters.memory_repository import MemoryRepository
 from flix.adapters.orm import metadata, map_model_to_tables
+from flix.adapters.memory_repository import MemoryRepository
+
 from flix.domain.model import User
 
-path = os.path.dirname(__file__)
-TEST_DATA_PATH_MEMORY = os.path.join(path, 'data', 'memory')
-TEST_DATA_PATH_DATABASE = os.path.join(path, 'data', 'database')
+TEST_DATA_PATH_MEMORY = os.path.join('tests', 'data', 'memory')
+TEST_DATA_PATH_DATABASE = os.path.join('tests', 'data', 'database')
 
 TEST_DATABASE_URI_IN_MEMORY = 'sqlite://'
-TEST_DATABASE_URI_FILE = 'sqlite:///CS235FLIX-test.db'
+TEST_DATABASE_URI_FILE = 'sqlite:///flix-test-test.db'
 
 
 @pytest.fixture
