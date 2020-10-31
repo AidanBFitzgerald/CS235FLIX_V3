@@ -24,7 +24,7 @@ class MemoryRepository(AbstractRepository):
 
     def get_user(self, username) -> User:
         for user in self.__dataset_of_users:
-            if user.user_name == username:
+            if user.username == username:
                 return user
 
     def add_movie(self, movie: Movie):
@@ -160,6 +160,20 @@ class MemoryRepository(AbstractRepository):
         for director in self.__dataset_of_directors:
             if director.director_full_name == fullname:
                 return director
+
+    def add_to_watchlist(self, username: str, movie_id: int):
+        for user in self.__dataset_of_users:
+            if user.username == username:
+                for movie in self.__dataset_of_movies:
+                    if movie.id == movie_id:
+                        user.add_to_watchlist(movie)
+
+    def remove_from_watchlist(self, username: str, movie_id: int):
+        for user in self.__dataset_of_users:
+            if user.username == username:
+                for movie in self.__dataset_of_movies:
+                    if movie.id == movie_id:
+                        user.remove_from_watchlist(movie)
 
     def read_csv_file(self, file_name):
         with open(file_name, mode='r', encoding='utf-8-sig') as csvfile:
