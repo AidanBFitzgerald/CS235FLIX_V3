@@ -123,15 +123,19 @@ class SqlAlchemyRepository(AbstractRepository):
         return movies
 
     def get_letter_of_next_movie(self, movie: Movie):
+        letter = None
         movie = self._session_cm.session.query(Movie).filter(Movie._first_letter > movie.first_letter).order_by(
             Movie._first_letter).first()
-        letter = movie.get_first_letter()
+        if letter is not None:
+            letter = movie.get_first_letter()
         return letter
 
     def get_letter_of_previous_movie(self, movie: Movie):
+        letter = None
         movie = self._session_cm.session.query(Movie).filter(Movie._first_letter < movie.first_letter).order_by(
             desc(Movie._first_letter)).first()
-        letter = movie.get_first_letter()
+        if letter is not None:
+            letter = movie.get_first_letter()
         return letter
 
     def get_all_letters(self):
