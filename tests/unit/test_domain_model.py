@@ -25,11 +25,11 @@ def genre():
 
 @pytest.fixture()
 def watchlist():
-    return WatchList()
+    return WatchList(User('shaun', '12345'))
 
 
 def test_user_construction(user):
-    assert user.user_name == 'dbowie'
+    assert user.username == 'dbowie'
     assert user.password == '1234567890'
     assert repr(user) == '<User dbowie>'
 
