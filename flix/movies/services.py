@@ -113,17 +113,14 @@ def get_watchlist(repo: AbstractRepository):
 def add_to_watchlist(movie_id: int, repo: AbstractRepository):
     if 'username' not in session:
         return
-    user = repo.get_user(session['username'])
-    movie = repo.get_movie(movie_id)
-    user.add_to_watchlist(movie)
+
+    repo.add_to_watchlist(session['username'], movie_id)
 
 
 def remove_from_watchlist(movie_id: int, repo: AbstractRepository):
     if 'username' not in session:
         return
-    user = repo.get_user(session['username'])
-    movie = repo.get_movie(movie_id)
-    user.remove_from_watchlist(movie)
+    repo.remove_from_watchlist(session['username'], movie_id)
 
 
 def movie_in_watchlist(watchlist, movie_id: int):
@@ -185,7 +182,7 @@ def movies_to_dict(movies: Iterable[Movie]):
 
 def review_to_dict(review: Review):
     review_dict = {
-        'username': review.user.user_name,
+        'username': review.user.username,
         'movie_id': review.movie.id,
         'review_text': review.review_text,
         'timestamp': review.timestamp
@@ -211,7 +208,7 @@ def genres_to_dict(genres: Iterable[Genre]):
 
 def user_to_dict(user: User):
     user_dict = {
-        'username': user.user_name,
+        'username': user.username,
         'watchlist': user.watchlist.watchlist
     }
     return user_dict
