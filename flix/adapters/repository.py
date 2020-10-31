@@ -160,3 +160,11 @@ class AbstractRepository(abc.ABC):
 
         returns None if director is not in repository"""
         raise NotImplementedError
+
+    def add_to_watchlist(self, user: str, movie_id: int):
+        """Adds movie to watchlist of user"""
+        raise NotImplementedError
+
+    def remove_from_watchlist(self, user: str, movie_id: int):
+        """Removes movie from watchlist of user"""
+        raise NotImplementedError
