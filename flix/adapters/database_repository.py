@@ -126,7 +126,7 @@ class SqlAlchemyRepository(AbstractRepository):
         letter = None
         movie = self._session_cm.session.query(Movie).filter(Movie._first_letter > movie.first_letter).order_by(
             Movie._first_letter).first()
-        if letter is not None:
+        if movie is not None:
             letter = movie.get_first_letter()
         return letter
 
@@ -134,7 +134,7 @@ class SqlAlchemyRepository(AbstractRepository):
         letter = None
         movie = self._session_cm.session.query(Movie).filter(Movie._first_letter < movie.first_letter).order_by(
             desc(Movie._first_letter)).first()
-        if letter is not None:
+        if movie is not None:
             letter = movie.get_first_letter()
         return letter
 
