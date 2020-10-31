@@ -136,6 +136,7 @@ class Movie:
         self._runtime_minutes = None
         self._reviews = []
         self._id = movie_id
+        self._watchlists = []
 
         if year >= 1900:
             self._year = year
@@ -145,6 +146,27 @@ class Movie:
             self._title = None
         else:
             self._title = title.strip()
+
+        try:
+            movie_title = self.title
+        except TypeError:
+            return
+
+        letter_found = False
+        self._first_letter = movie_title[0]
+
+        for letter in movie_title:
+            if 65 <= ord(letter) <= 90:
+                self._first_letter = letter
+                letter_found = True
+                break
+        for letter in movie_title:
+            if letter_found:
+                break
+            if 48 <= ord(letter) <= 57:
+                self._first_letter = letter
+                letter_found = True
+                break
 
     @property
     def id(self):
@@ -184,17 +206,11 @@ class Movie:
 
     @property
     def first_letter(self):
-        try:
-            movie_title = self.title
-        except TypeError:
-            return
+        return self._first_letter
 
-        for letter in movie_title:
-            if 65 <= ord(letter) <= 90:
-                return letter
-        for letter in movie_title:
-            if 48 <= ord(letter) <= 57:
-                return letter
+    @property
+    def watchlists(self):
+        return self._watchlists
 
     @title.setter
     def title(self, new_title: str):
@@ -242,18 +258,15 @@ class Movie:
             self._reviews.append(review)
 
     def get_first_letter(self):
-        letter = ""
-        try:
-            movie_title = self.title
-        except TypeError:
-            return
+        return self._first_letter
 
-        for letter in movie_title:
-            if 65 <= ord(letter) <= 90:
-                return letter
-        for letter in movie_title:
-            if 48 <= ord(letter) <= 57:
-                return letter
+    def add_watchlist(self, watchlist: 'User'):
+        if isinstance(watchlist, WatchList):
+            self._watchlists.append(watchlist)
+
+    def remove_watchlist(self, watchlist: 'User'):
+        if watchlist in self._watchlists:
+            self._watchlists.remove(watchlist)
 
     def __repr__(self):
         return f"<Movie {self._title}, {self._year}>"
@@ -355,10 +368,10 @@ class User:
         self._watched_movies = []
         self._reviews = []
         self._time_spent_watching_movies = 0
-        self._watchlist = WatchList()
+        self._watchlist = []
 
     @property
-    def user_name(self) -> str:
+    def username(self) -> str:
         return self._username
 
     @property
@@ -382,10 +395,16 @@ class User:
         return self._watchlist
 
     def add_to_watchlist(self, movie: Movie):
-        self._watchlist.add_movie(movie)
+        watchlist = WatchList(self)
+        watchlist.watchlist = self._watchlist
+        watchlist.add_movie(movie)
+        self._watchlist = watchlist.watchlist
 
     def remove_from_watchlist(self, movie: Movie):
-        self._watchlist.remove_movie(movie)
+        watchlist = WatchList(self)
+        watchlist.watchlist = self._watchlist
+        watchlist.remove_movie(movie)
+        self._watchlist = watchlist.watchlist
 
     def __repr__(self):
         return f"<User {self._username}>"
@@ -393,12 +412,12 @@ class User:
     def __eq__(self, other):
         if not isinstance(other, User):
             return False
-        return self._username == other.user_name
+        return self._username == other.username
 
     def __lt__(self, other):
         if not isinstance(other, User):
             return False
-        return self._username < other.user_name
+        return self._username < other.username
 
     def __hash__(self):
         return hash(self._username)
@@ -496,21 +515,27 @@ class WatchingSession:
 
 
 class WatchList:
-    def __init__(self):
+    def __init__(self, user: User):
         self._watchlist = []
         self._iter_index = 0
+        self._user = user
 
     @property
     def watchlist(self):
         return self._watchlist
 
+    @watchlist.setter
+    def watchlist(self, new_list):
+        self._watchlist = new_list
+
     def add_movie(self, movie: Movie):
         if isinstance(movie, Movie) and movie not in self._watchlist:
+            movie.add_watchlist(self._user)
             self._watchlist.append(movie)
 
     def remove_movie(self, movie: Movie):
         if movie in self._watchlist:
-            self._watchlist.remove(movie)
+            movie.remove_watchlist(self._user)
 
     def select_movie_to_watch(self, index: int):
         if 0 <= index < len(self._watchlist):
@@ -537,7 +562,7 @@ class WatchList:
 
 
 def make_review(review_text: str, user: User, movie: Movie, rating: int,
-                timestamp: datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")):
+                timestamp: datetime = datetime.today()):
     review = Review(user, movie, review_text, rating, timestamp)
     user.add_review(review)
     movie.add_review(review)
