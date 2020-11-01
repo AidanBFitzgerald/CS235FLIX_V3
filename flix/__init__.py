@@ -28,9 +28,6 @@ def create_app(test_config=None):
         app.config.from_mapping(test_config)
         data_path = app.config['TEST_DATA_PATH']
 
-    # Here the "magic" of our repository pattern happens. We can easily switch between in memory data and
-    # persistent database data storage for our application.
-
     if app.config['REPOSITORY'] == 'memory':
         # Create the MemoryRepository instance for a memory-based repository.
         repo.repo_instance = memory_repository.MemoryRepository()
@@ -40,10 +37,6 @@ def create_app(test_config=None):
         # Configure database.
         database_uri = app.config['SQLALCHEMY_DATABASE_URI']
 
-        # We create a comparatively simple SQLite database, which is based on a single file (see .env for URI).
-        # For example the file database could be located locally and relative to the application in covid-19.db,
-        # leading to a URI of "sqlite:///covid-19.db".
-        # Note that create_engine does not establish any actual DB connection directly!
         database_echo = app.config['SQLALCHEMY_ECHO']
         database_engine = create_engine(database_uri, connect_args={"check_same_thread": False}, poolclass=NullPool,
                                         echo=database_echo)
@@ -65,13 +58,12 @@ def create_app(test_config=None):
             # Solely generate mappings that map domain model classes to the database tables.
             map_model_to_tables()
 
-        # Create the database session factory using sessionmaker (this has to be done once, in a global manner)
+        # Create the database session factory using sessionmaker
         session_factory = sessionmaker(autocommit=False, autoflush=True, bind=database_engine)
         # Create the SQLAlchemy DatabaseRepository instance for an sqlite3-based repository.
         repo.repo_instance = database_repository.SqlAlchemyRepository(session_factory)
 
-
-    # Build the application - these steps require an application context.
+    # Build the application
     with app.app_context():
 
         from .home import home
